@@ -19,13 +19,20 @@ defmodule Calculator do
 
   defp loop(current_value) do
     new_value = receive do
-      {:value, sender } ->
-        send(sender, {:response, current_value})
-        current_value
-      {:add, value} ->
-        new_value = current_value + value
-        new_value
+      message ->
+        process_message(current_value, message)
     end
     loop(new_value)
   end
+
+  defp process_message(current_value, {:value, sender}) do
+    send(sender, {:response, current_value})
+    current_value
+  end
+
+  defp process_message(current_value, {:add, value}) do
+    new_value = current_value + value
+    new_value
+  end
+
 end
